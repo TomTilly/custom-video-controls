@@ -4,7 +4,8 @@ const playButton = player.querySelector('.play-button');
 const progressBar = player.querySelector('.progress');
 const progressBarFill = player.querySelector('.progress__filled');
 const skipButtons = player.querySelectorAll('[data-skip]');
-const volumeRangeEl = player.querySelector('.player__slider[name="volume"]');
+const volumeRangeEl = player.querySelector('[name="volume"]');
+const playbackRateEl = player.querySelector('[name="playbackRate"]');
 let isPlaying = false;
 let mouseDown = false;
 
@@ -32,6 +33,10 @@ function updateVolume(){
 	video.volume = this.value;
 }
 
+function updatePlaybackRate(){
+	video.playbackRate = this.value;
+}
+
 // Updates the display of the progress bar
 function updateProgressBar() {
 	const totalDuration = video.duration;
@@ -44,19 +49,28 @@ function skip() {
 	video.currentTime += parseFloat(this.dataset.skip)
 }
 
-video.addEventListener('click', togglePlay);
-video.addEventListener('play', updateButton);
-video.addEventListener('pause', updateButton);
-video.addEventListener('timeupdate', updateProgressBar);
 
+// Toggle playing of video when user clicks on video or play/pause button
+video.addEventListener('click', togglePlay);
 playButton.addEventListener('click', togglePlay);
 
+// Update button icon when video play and pause state changes
+video.addEventListener('play', updateButton);
+video.addEventListener('pause', updateButton);
+
+// Update the progress bar on the screen when time updates
+video.addEventListener('timeupdate', updateProgressBar);
+
+// Let user click and move along progress bar to scroll through video 
 progressBar.addEventListener('mousedown', updateProgress);
 progressBar.addEventListener('mousemove', updateProgress);
 
+// Let users skip ahead and back
 skipButtons.forEach(button => button.addEventListener('click', skip));
 
 volumeRangeEl.addEventListener('input', updateVolume);
+playbackRateEl.addEventListener('input', updatePlaybackRate);
 
+// Listen for mousedown and up to know if user is clicking while moving the mouse (used for scrolling the progress bar)
 progressBar.addEventListener('mousedown', () => mouseDown = true);
 progressBar.addEventListener('mouseup', () => mouseDown = false);
