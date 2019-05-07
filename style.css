@@ -161,8 +161,7 @@ input[type=range]::-moz-range-thumb {
 
 /* Fullscreen */
 
-.fullscreen-container {
+.fullscreen-button {
   font-size: 16px;
   color: white;
-
 }

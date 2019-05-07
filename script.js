@@ -6,6 +6,7 @@ const progressBarFill = player.querySelector('.progress__filled');
 const skipButtons = player.querySelectorAll('[data-skip]');
 const volumeRangeEl = player.querySelector('[name="volume"]');
 const playbackRateEl = player.querySelector('[name="playbackRate"]');
+const fullscreenButton = player.querySelector('.fullscreen-button');
 let isPlaying = false;
 let mouseDown = false;
 
@@ -20,7 +21,7 @@ function updateButton() {
 }
 
 // Just updates the currentTime property, doesn't handle the display
-function updateProgress(e) {
+function scrub(e) {
 	if(mouseDown || e.type === 'mousedown'){
 		const progressBarTotalWidth = progressBar.offsetWidth;
 		const userClickedX = e.offsetX;
@@ -49,6 +50,13 @@ function skip() {
 	video.currentTime += parseFloat(this.dataset.skip)
 }
 
+function changeVideoSize(){
+	if(!document.fullscreenElement){
+		player.requestFullscreen();
+	} else {
+		document.exitFullscreen();
+	}
+}
 
 // Toggle playing of video when user clicks on video or play/pause button
 video.addEventListener('click', togglePlay);
@@ -62,8 +70,8 @@ video.addEventListener('pause', updateButton);
 video.addEventListener('timeupdate', updateProgressBar);
 
 // Let user click and move along progress bar to scroll through video 
-progressBar.addEventListener('mousedown', updateProgress);
-progressBar.addEventListener('mousemove', updateProgress);
+progressBar.addEventListener('mousedown', scrub);
+progressBar.addEventListener('mousemove', scrub);
 
 // Let users skip ahead and back
 skipButtons.forEach(button => button.addEventListener('click', skip));
@@ -74,3 +82,6 @@ playbackRateEl.addEventListener('input', updatePlaybackRate);
 // Listen for mousedown and up to know if user is clicking while moving the mouse (used for scrolling the progress bar)
 progressBar.addEventListener('mousedown', () => mouseDown = true);
 progressBar.addEventListener('mouseup', () => mouseDown = false);
+
+// Make fullscreen
+fullscreenButton.addEventListener('click', changeVideoSize);
