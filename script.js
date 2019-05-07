@@ -5,6 +5,7 @@ const progressBar = player.querySelector('.progress');
 const progressBarFill = player.querySelector('.progress__filled');
 const skipButtons = player.querySelectorAll('[data-skip]');
 let isPlaying = false;
+let mouseDown = false;
 
 function togglePlay(){
 	isPlaying ? video.pause() : video.play();
@@ -18,9 +19,12 @@ function updateButton() {
 
 // Just updates the currentTime property, doesn't handle the display
 function updateProgress(e) {
-	const progressBarTotalWidth = progressBar.offsetWidth;
-	const progressPercentage = (e.offsetX / progressBarTotalWidth);
-	video.currentTime = progressPercentage * video.duration;
+	if(mouseDown || e.type === 'mousedown'){
+		const progressBarTotalWidth = progressBar.offsetWidth;
+		const userClickedX = e.offsetX;
+		const progressPercentage = (userClickedX / progressBarTotalWidth);
+		video.currentTime = progressPercentage * video.duration; // will automatically trigger timeupdate event and updateProgressBar handler
+	}
 }
 
 // Updates the display of the progress bar
@@ -45,5 +49,9 @@ video.addEventListener('timeupdate', updateProgressBar);
 playButton.addEventListener('click', togglePlay);
 
 progressBar.addEventListener('mousedown', updateProgress);
+progressBar.addEventListener('mousemove', updateProgress);
 
 skipButtons.forEach(button => button.addEventListener('click', skip));
+
+progressBar.addEventListener('mousedown', () => mouseDown = true);
+progressBar.addEventListener('mouseup', () => mouseDown = false);
