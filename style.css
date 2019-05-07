@@ -158,3 +158,11 @@ input[type=range]::-moz-range-thumb {
   background: #ffc600;
   cursor: pointer;
 }
+
+/* Fullscreen */
+
+.fullscreen-container {
+  font-size: 16px;
+  color: white;
+
+}
